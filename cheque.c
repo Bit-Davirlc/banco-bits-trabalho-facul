@@ -121,13 +121,52 @@ char *centena(int centena)
     }
 }
 
-int dataPorExtenso() {}
-
-int numeroPorExtenso(double valor)
+char *mesExtenso(int mes)
 {
+    switch (mes)
+    {
+    case 1:
+        return "janeiro";
+    case 2:
+        return "fevereiro";
+    case 3:
+        return "março";
+    case 4:
+        return "abril";
+    case 5:
+        return "maio";
+    case 6:
+        return "junho";
+    case 7:
+        return "julho";
+    case 8:
+        return "agosto";
+    case 9:
+        return "setembro";
+    case 10:
+        return "outubro";
+    case 11:
+        return "novembro";
+    case 12:
+        return "dezembro";
+    }
+}
 
-    char
-        numeroEscrito[100];
+char *dataPorExtenso(char *data, int dia, int mes, int ano)
+{
+    char numero[10];
+    sprintf(numero, "%d", dia);
+    strcat(data, numero);
+    strcat(data, " de ");
+    strcat(data, mesExtenso(mes));
+    strcat(data, " de ");
+    sprintf(numero, "%d", ano);
+    strcat(data, numero);
+    return data;
+}
+
+char *numeroPorExtenso(char *numeroEscrito, double valor)
+{
 
     int power = 0;
     for (power = 0; pow(10, power + 1) < valor; power++)
@@ -204,15 +243,20 @@ int numeroPorExtenso(double valor)
         strcat(numeroEscrito, " CentBits");
     }
 
-    printf("%s\n", numeroEscrito);
-
-    return 0;
+    return numeroEscrito;
 }
 
 int main()
 {
+    char
+        numeroEscrito[100];
 
-    printf("%i", numeroPorExtenso(4560.98));
+    char data[100];
 
+    numeroPorExtenso(numeroEscrito, 4560.98);
+    dataPorExtenso(data, 8, 3, 2002);
+
+    printf("%s\n", numeroEscrito);
+    printf("%s\n", data);
     return 0;
 }

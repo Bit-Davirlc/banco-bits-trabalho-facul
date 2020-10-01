@@ -3,6 +3,14 @@
 #include <math.h>
 #include <string.h>
 
+void anterior(char *str, int temAnterior)
+{
+    if (temAnterior == 1)
+    {
+        strcat(str, "e ");
+    }
+}
+
 char *unidade(int unidade)
 {
     switch (unidade)
@@ -26,9 +34,7 @@ char *unidade(int unidade)
     case 9:
         return "nove";
     case 0:
-        return "zero";
-    default:
-        return "unidade";
+        return "";
     }
 }
 
@@ -39,28 +45,28 @@ char *dezena(int dezena, int unidade)
     case 1:
         switch (unidade)
         {
-        case 10:
+        case 0:
             return "dez";
-        case 11:
+        case 1:
             return "onze";
-        case 12:
+        case 2:
             return "doze";
-        case 13:
+        case 3:
             return "treze";
-        case 14:
+        case 4:
             return "quatorze ou catorze";
-        case 15:
+        case 5:
             "quinze";
-        case 16:
+        case 6:
             return "dezesseis";
-        case 17:
+        case 7:
             return "dezessete";
-        case 18:
+        case 8:
             return "dezoito";
-        case 19:
+        case 9:
             return "dezenove";
         default:
-            return "?";
+            return "";
             break;
         }
     case 2:
@@ -82,7 +88,7 @@ char *dezena(int dezena, int unidade)
     case 0:
         return "";
     default:
-        return "dezena";
+        return "";
     }
 }
 
@@ -109,20 +115,16 @@ char *centena(int centena)
     case 9:
         return "novecentos";
     case 0:
-        return "?";
+        return "";
     default:
-        return "?centena?";
+        return "";
     }
 }
 
-int main()
+int dataPorExtenso() {}
+
+int numeroPorExtenso(double valor)
 {
-    // 3-mil
-    // 2-cento, duzentos, tresentos, quatrocentos...
-    // 1 - douze, treze, quatorze, vinte, trinta ...
-    // 0 - um, doiz, trez, quatro
-    //dois mil, cento e três Bits e treze CentBits,
-    float valor = 6969.13;
 
     char
         numeroEscrito[100];
@@ -132,48 +134,85 @@ int main()
         ;
 
     double valorRestante = floor(valor);
+    int intpart = (int)valor;
+    double cenbits = (valor - intpart) * 100;
+
+    int temAnterior = 0;
 
     for (; power >= 0; power--)
     {
         //printf("%.0i => %.0lf\n", power, valor / pow(10, power));
         int valorAtual = floor(valorRestante / pow(10, power));
         valorRestante = valorRestante - valorAtual * pow(10, power);
-
+        if (valorAtual == 0)
+        {
+            temAnterior = 0;
+        }
         switch (power)
         {
         case 0:
+            anterior(numeroEscrito, temAnterior);
+            temAnterior = 1;
             strcat(numeroEscrito, unidade(valorAtual));
             break;
         case 1:
+            anterior(numeroEscrito, temAnterior);
+            temAnterior = 1;
             strcat(numeroEscrito, dezena(valorAtual, valorRestante - valorAtual * pow(10, power - 1)));
             break;
         case 2:
+            temAnterior = 1;
             strcat(numeroEscrito, centena(valorAtual));
             break;
         case 3:
+            anterior(numeroEscrito, temAnterior);
+            temAnterior = 1;
             strcat(numeroEscrito, unidade(valorAtual));
             strcat(numeroEscrito, " mil");
             break;
 
         case 4:
+            anterior(numeroEscrito, temAnterior);
+            temAnterior = 1;
             strcat(numeroEscrito, dezena(valorAtual, valorRestante - valorAtual * pow(10, power - 1)));
-            strcat(numeroEscrito, " mil");
             break;
         case 5:
+            anterior(numeroEscrito, temAnterior);
+            temAnterior = 1;
             strcat(numeroEscrito, centena(valorAtual));
-            strcat(numeroEscrito, " mil");
             break;
 
         default:
-            strcat(numeroEscrito, "?");
+            strcat(numeroEscrito, "");
             break;
         }
+
         if (valorAtual != 0)
         {
             strcat(numeroEscrito, " ");
         }
     }
+    strcat(numeroEscrito, "Bits");
+
+    if (cenbits != 0)
+    {
+        strcat(numeroEscrito, " e ");
+        int valorDezena = floor(cenbits / 10);
+        int valorUnidade = cenbits - valorDezena * 10;
+
+        strcat(numeroEscrito, dezena(valorDezena, valorUnidade));
+        strcat(numeroEscrito, " CentBits");
+    }
 
     printf("%s\n", numeroEscrito);
+
+    return 0;
+}
+
+int main()
+{
+
+    printf("%i", numeroPorExtenso(4560.98));
+
     return 0;
 }
